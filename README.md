@@ -1,7 +1,7 @@
 # What is go-requests?
 It's a package that makes it easy to send HTTP requests using **Go**. I had the idea to code this package because I was tired to write the same code every time I wanted to interact with an external server and I thought it can be useful for someone else with the same problem
 
-# Installation
+# Installation
 `go get -u github.com/jaavier/go-requests`
 
 ### How to start using it? 
