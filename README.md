@@ -1,6 +1,9 @@
 # What is go-requests?
 It's a package that makes it easy to send HTTP requests using **Go**. I had the idea to code this package because I was tired to write the same code every time I wanted to interact with an external server and I thought it can be useful for someone else with the same problem
 
+# Installation
+`go get -u github.com/jaavier/go-requests`
+
 ### How to start using it? 
 Methods allowed:
 - GET
@@ -38,48 +41,101 @@ type Response struct {
 }
 ```
 # Example Sending Request
-### Sending JSON with visitor message:
+
+### Get your public IP
 ```golang
-type Visitor struct {
-    Message string `json:"message"`
+package main
+
+import (
+	"fmt"
+
+	gorequests "github.com/jaavier/go-requests"
+)
+
+func main() {
+	res, err := gorequests.SendRequest(gorequests.Request{
+		Method: "GET",
+		Url:    "https://ifconfig.co",
+		Headers: []gorequests.Header{
+			{
+				Key:   "User-Agent",
+				Value: "curl/7.84.0",
+			},
+		},
+	})
+	if err != nil {
+		panic(err)
+	}
+	fmt.Printf("Your ip is: %s", res.Body)
 }
 ```
-```golang
-response, err := SendRequest(Request{
-	Method: "POST",
-	Url:    "https://webhook.site/a41a84e0-1659-4abb-8e06-6a3a1e23e95c",
-	BodyJSON: Visitor{
-		Message: "Hello from github.com/jaavier/go-requests!",
-	},
-	Headers: []Header{
-		{
-			Key:   "Content-Type",
-			Value: "application/json",
-		},
-	},
-})
 
-if err != nil {
-	panic(err)
+### Sending JSON with visitor message:
+```golang
+package main
+
+import (
+	"fmt"
+
+	gorequests "github.com/jaavier/go-requests"
+)
+
+type Visitor struct {
+	Message string `json:"message"`
 }
 
-fmt.Println(response.Body)
+func main() {
+	response, err := gorequests.SendRequest(gorequests.Request{
+		Method: "POST",
+		Url:    "https://webhook.site/a41a84e0-1659-4abb-8e06-6a3a1e23e95c",
+		BodyJSON: Visitor{
+			Message: "Hello from github.com/jaavier/go-requests!",
+		},
+		Headers: []gorequests.Header{
+			{
+				Key:   "Content-Type",
+				Value: "application/json",
+			},
+		},
+	})
+	
+	if err != nil {
+		panic(err)
+	}
+	
+	fmt.Println(response.Body)
+}
 ```
 ### Sending Form with visitor message:
 ```golang
-var form url.Values = url.Values{
-	"message": {"Hello from github.com/jaavier/requests"},
+package main
+
+import (
+	"fmt"
+	"net/url"
+
+	gorequests "github.com/jaavier/go-requests"
+)
+
+type Visitor struct {
+	Message string `json:"message"`
 }
 
-response, err := SendRequest(Request{
-	Method: "POST",
-	Url:    "https://faas-fra1-afec6ce7.doserverless.co/api/v1/web/fn-95a06ffa-77ad-4531-8214-8b96897b95d7/default/delete-soon",
-	Form:   form,
-})
-
-if err != nil {
-	panic(err)
+func main() {
+	var form url.Values = url.Values{
+		"message": {"Hello from github.com/jaavier/requests"},
+	}
+	
+	response, err := gorequests.SendRequest(gorequests.Request{
+		Method: "POST",
+		Url:    "https://webhook.site/a41a84e0-1659-4abb-8e06-6a3a1e23e95c",
+		Form:   form,
+	})
+	
+	if err != nil {
+		panic(err)
+	}
+	
+	fmt.Println(response.StatusCode)
 }
-
-fmt.Println(response.Body)
 ```
